@@ -27,6 +27,11 @@ dist-ssr
 .DS_Store
 *.suo
 *.ntvs*
-*.njsproj
-*.sln
 *.sw?
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+.pytest_cache/

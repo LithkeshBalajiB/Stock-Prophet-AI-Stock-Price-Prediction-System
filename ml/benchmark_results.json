@@ -1,0 +1,82 @@
+[
+  {
+    "ticker": "AAPL",
+    "currency": "USD",
+    "total_days": 1254,
+    "holdout": {
+      "test_days": 251,
+      "naive_rmse": 4.4973038382904225,
+      "naive_mae": 3.160836633933018,
+      "trend_rmse": 48.02928358755142,
+      "trend_mae": 42.91473091921312
+    },
+    "tscv_5fold": {
+      "naive_rmse_mean": 3.5186427049069153,
+      "naive_mae_mean": 2.5047219029868524,
+      "lr_rmse_mean": 3.6280350259732357,
+      "lr_mae_mean": 2.623265915337928,
+      "rf_rmse_mean": 14.804138315178767,
+      "rf_mae_mean": 11.824861184907693
+    }
+  },
+  {
+    "ticker": "MSFT",
+    "currency": "USD",
+    "total_days": 1254,
+    "holdout": {
+      "test_days": 251,
+      "naive_rmse": 8.845931148029138,
+      "naive_mae": 6.12637596586311,
+      "trend_rmse": 79.84236030870251,
+      "trend_mae": 65.96557123673905
+    },
+    "tscv_5fold": {
+      "naive_rmse_mean": 6.322417337191854,
+      "naive_mae_mean": 4.54441971941692,
+      "lr_rmse_mean": 6.449460749157582,
+      "lr_mae_mean": 4.688373995006776,
+      "rf_rmse_mean": 24.748301911850792,
+      "rf_mae_mean": 18.664861245289075
+    }
+  },
+  {
+    "ticker": "RELIANCE.NS",
+    "currency": "INR",
+    "total_days": 1241,
+    "holdout": {
+      "test_days": 249,
+      "naive_rmse": 18.110637643208715,
+      "naive_mae": 13.484733857304217,
+      "trend_rmse": 142.48592672245204,
+      "trend_mae": 122.0112836369223
+    },
+    "tscv_5fold": {
+      "naive_rmse_mean": 17.031647294077757,
+      "naive_mae_mean": 12.533966695851294,
+      "lr_rmse_mean": 17.894223076034777,
+      "lr_mae_mean": 13.406755330145213,
+      "rf_rmse_mean": 45.24408704245959,
+      "rf_mae_mean": 31.88856964646148
+    }
+  },
+  {
+    "ticker": "GOOGL",
+    "currency": "USD",
+    "total_days": 1254,
+    "holdout": {
+      "test_days": 251,
+      "naive_rmse": 6.58435667204114,
+      "naive_mae": 4.742510001497915,
+      "trend_rmse": 134.89678620125835,
+      "trend_mae": 130.86309720620648
+    },
+    "tscv_5fold": {
+      "naive_rmse_mean": 3.7738641576320084,
+      "naive_mae_mean": 2.7096585008574694,
+      "lr_rmse_mean": 3.874960109516722,
+      "lr_mae_mean": 2.811782683561039,
+      "rf_rmse_mean": 22.640489873995016,
+      "rf_mae_mean": 16.49586687511006
+    }
+  }
+]

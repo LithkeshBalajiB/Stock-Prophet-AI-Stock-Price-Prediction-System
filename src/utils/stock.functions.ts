@@ -15,7 +15,9 @@ export type FetchStockResult = {
  */
 export const fetchStock = createServerFn({ method: "GET" })
   .inputValidator((data: { ticker: string; range: string }) => {
-    const ticker = String(data.ticker || "").trim().toUpperCase();
+    const ticker = String(data.ticker || "")
+      .trim()
+      .toUpperCase();
     const range = String(data.range || "5y");
     if (!/^[A-Z0-9.\-^]{1,12}$/.test(ticker)) {
       throw new Error("Invalid ticker format.");

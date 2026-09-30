@@ -53,7 +53,9 @@ function HomePage() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FetchStockResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [csvInfo, setCsvInfo] = useState<{ name: string; rows: number; skipped: number } | null>(null);
+  const [csvInfo, setCsvInfo] = useState<{ name: string; rows: number; skipped: number } | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const analysis: AnalysisResult | null = useMemo(() => {
@@ -97,7 +99,10 @@ function HomePage() {
         setCsvInfo(null);
       } else {
         const tickerName =
-          file.name.replace(/\.csv$/i, "").toUpperCase().slice(0, 12) || "CSV";
+          file.name
+            .replace(/\.csv$/i, "")
+            .toUpperCase()
+            .slice(0, 12) || "CSV";
         setData({
           ticker: tickerName,
           bars: parsed.bars,
@@ -123,9 +128,8 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const splitDate = data && analysis
-    ? data.bars[Math.floor(data.bars.length * 0.8)]?.date
-    : undefined;
+  const splitDate =
+    data && analysis ? data.bars[Math.floor(data.bars.length * 0.8)]?.date : undefined;
 
   function downloadCSV() {
     if (!analysis || !data) return;
@@ -156,8 +160,8 @@ function HomePage() {
             </span>
           </h1>
           <p className="max-w-2xl text-muted-foreground md:text-lg">
-            Live data from Yahoo Finance, moving averages, and a linear-regression forecast —
-            all computed in real time.
+            Live data from Yahoo Finance, moving averages, and a linear-regression forecast — all
+            computed in real time.
           </p>
         </header>
 
@@ -184,7 +188,10 @@ function HomePage() {
             <>
               <div className="grid gap-4 md:grid-cols-[1fr_auto_auto_auto]">
                 <div className="space-y-2">
-                  <Label htmlFor="ticker" className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                  <Label
+                    htmlFor="ticker"
+                    className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
+                  >
                     Ticker
                   </Label>
                   <Input
@@ -218,7 +225,10 @@ function HomePage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="forecast" className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                  <Label
+                    htmlFor="forecast"
+                    className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
+                  >
                     Forecast (days)
                   </Label>
                   <Input
@@ -227,7 +237,9 @@ function HomePage() {
                     min={5}
                     max={120}
                     value={forecastDays}
-                    onChange={(e) => setForecastDays(Math.max(5, Math.min(120, Number(e.target.value) || 30)))}
+                    onChange={(e) =>
+                      setForecastDays(Math.max(5, Math.min(120, Number(e.target.value) || 30)))
+                    }
                     className="w-28 border-border bg-input font-mono"
                   />
                 </div>
@@ -237,7 +249,11 @@ function HomePage() {
                     disabled={loading || !ticker.trim()}
                     className="h-10 gap-2 px-6 font-mono uppercase tracking-wider glow-bull"
                   >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Activity className="h-4 w-4" />}
+                    {loading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Activity className="h-4 w-4" />
+                    )}
                     {loading ? "Loading…" : "Run"}
                   </Button>
                 </div>
@@ -246,7 +262,19 @@ function HomePage() {
               {/* Quick picks */}
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="font-mono text-xs uppercase text-muted-foreground">try:</span>
-                {["AAPL", "TSLA", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "^GSPC", "INFY.NS", "RELIANCE.NS", "TCS.NS"].map((t) => (
+                {[
+                  "AAPL",
+                  "TSLA",
+                  "MSFT",
+                  "NVDA",
+                  "GOOGL",
+                  "AMZN",
+                  "META",
+                  "^GSPC",
+                  "INFY.NS",
+                  "RELIANCE.NS",
+                  "TCS.NS",
+                ].map((t) => (
                   <button
                     key={t}
                     onClick={() => {
@@ -295,7 +323,10 @@ function HomePage() {
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="forecast-csv" className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                  <Label
+                    htmlFor="forecast-csv"
+                    className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
+                  >
                     Forecast (days)
                   </Label>
                   <Input
@@ -304,7 +335,9 @@ function HomePage() {
                     min={5}
                     max={120}
                     value={forecastDays}
-                    onChange={(e) => setForecastDays(Math.max(5, Math.min(120, Number(e.target.value) || 30)))}
+                    onChange={(e) =>
+                      setForecastDays(Math.max(5, Math.min(120, Number(e.target.value) || 30)))
+                    }
                     className="w-28 border-border bg-input font-mono"
                   />
                 </div>
@@ -334,7 +367,10 @@ function HomePage() {
                     Loaded <span className="text-foreground">{csvInfo.rows}</span> rows from{" "}
                     <span className="text-foreground">{csvInfo.name}</span>
                     {csvInfo.skipped > 0 && (
-                      <> · skipped {csvInfo.skipped} invalid row{csvInfo.skipped === 1 ? "" : "s"}</>
+                      <>
+                        {" "}
+                        · skipped {csvInfo.skipped} invalid row{csvInfo.skipped === 1 ? "" : "s"}
+                      </>
                     )}
                   </p>
                 )}
@@ -360,7 +396,7 @@ function HomePage() {
             <StatCard
               label="Total change"
               value={`${analysis.changePct >= 0 ? "+" : ""}${analysis.changePct.toFixed(2)}%`}
-              hint={`${data.bars.length} trading days`}
+              hint={`${analysis.dailyTrendPct >= 0 ? "+" : ""}${analysis.dailyTrendPct.toFixed(3)}%/day drift`}
               tone={analysis.changePct >= 0 ? "bull" : "bear"}
               icon={
                 analysis.trend === "up" ? (
@@ -373,15 +409,97 @@ function HomePage() {
               }
             />
             <StatCard
-              label="Test RMSE"
-              value={analysis.metrics.rmse.toFixed(3)}
-              hint="Linear regression"
+              label="Model (LinReg)"
+              value={`RMSE: ${analysis.metrics.rmse.toFixed(2)}`}
+              hint={`MAE: ${analysis.metrics.mae.toFixed(2)} (OLS fit)`}
             />
             <StatCard
-              label="Test MAE"
-              value={analysis.metrics.mae.toFixed(3)}
-              hint="Lower = better"
+              label="Naive Baseline"
+              value={`RMSE: ${analysis.metrics.baselineRmse.toFixed(2)}`}
+              hint={`MAE: ${analysis.metrics.baselineMae.toFixed(2)} (Pt = Pt-1)`}
             />
+          </section>
+        )}
+
+        {/* Side-by-Side Model vs Naive Baseline Benchmark */}
+        {data && analysis && (
+          <section className="glass mb-6 rounded-2xl p-5 md:p-6">
+            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="font-mono text-sm uppercase tracking-wider text-muted-foreground">
+                  Model Evaluation vs. Naive Baseline (20% Out-of-Sample Holdout)
+                </h2>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Held-out test set: {data.bars.length - Math.floor(data.bars.length * 0.8)} trading
+                  days
+                </p>
+              </div>
+              <span className="w-fit rounded border border-border bg-secondary/80 px-2.5 py-1 font-mono text-xs text-foreground">
+                Benchmark: P<sub>t</sub> = P<sub>t-1</sub>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {/* Linear Regression Card */}
+              <div className="rounded-xl border border-border/70 bg-secondary/30 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="font-mono text-sm font-semibold text-foreground">
+                    Linear Regression (OLS)
+                  </span>
+                  <span className="rounded bg-background/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+                    Parametric Trend Line
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <div className="rounded-lg bg-background/50 p-2.5">
+                    <div className="font-mono text-xs text-muted-foreground">Test RMSE</div>
+                    <div className="font-mono text-lg font-bold text-foreground">
+                      {analysis.metrics.rmse.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="rounded-lg bg-background/50 p-2.5">
+                    <div className="font-mono text-xs text-muted-foreground">Test MAE</div>
+                    <div className="font-mono text-lg font-bold text-foreground">
+                      {analysis.metrics.mae.toFixed(3)}
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-3 font-mono text-xs text-muted-foreground">
+                  Extrapolates linear slope b = {analysis.dailyTrendPct.toFixed(4)}%/day learned
+                  from initial 80% train window.
+                </p>
+              </div>
+
+              {/* Naive Baseline Card */}
+              <div className="rounded-xl border border-border/70 bg-secondary/30 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="font-mono text-sm font-semibold text-foreground">
+                    Naive Baseline (Persistence)
+                  </span>
+                  <span className="rounded bg-background/60 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+                    P<sub>t</sub> = P<sub>t-1</sub>
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-center">
+                  <div className="rounded-lg bg-background/50 p-2.5">
+                    <div className="font-mono text-xs text-muted-foreground">Test RMSE</div>
+                    <div className="font-mono text-lg font-bold text-foreground">
+                      {analysis.metrics.baselineRmse.toFixed(3)}
+                    </div>
+                  </div>
+                  <div className="rounded-lg bg-background/50 p-2.5">
+                    <div className="font-mono text-xs text-muted-foreground">Test MAE</div>
+                    <div className="font-mono text-lg font-bold text-foreground">
+                      {analysis.metrics.baselineMae.toFixed(3)}
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-3 font-mono text-xs text-muted-foreground">
+                  Deliberately simple benchmark: tomorrow&apos;s price equals today&apos;s price.
+                  Standard test for financial random walks.
+                </p>
+              </div>
+            </div>
           </section>
         )}
 
@@ -407,7 +525,12 @@ function HomePage() {
               <h2 className="font-mono text-sm uppercase tracking-wider text-muted-foreground">
                 {forecastDays}-day forecast
               </h2>
-              <Button variant="outline" size="sm" onClick={downloadCSV} className="gap-2 font-mono text-xs">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={downloadCSV}
+                className="gap-2 font-mono text-xs"
+              >
                 <Download className="h-3.5 w-3.5" />
                 CSV
               </Button>
@@ -427,7 +550,9 @@ function HomePage() {
                     return (
                       <tr key={f.date} className="border-t border-border/50">
                         <td className="px-4 py-2 text-muted-foreground">{f.date}</td>
-                        <td className="px-4 py-2 text-right">{formatCurrency(f.value, data?.currency ?? "USD")}</td>
+                        <td className="px-4 py-2 text-right">
+                          {formatCurrency(f.value, data?.currency ?? "USD")}
+                        </td>
                         <td
                           className={`px-4 py-2 text-right ${
                             delta >= 0 ? "text-bull" : "text-bear"
@@ -447,8 +572,9 @@ function HomePage() {
 
         <footer className="mt-12 text-center font-mono text-xs text-muted-foreground">
           <p>
-            Educational demo only — not financial advice. Data: Yahoo Finance.
-            Full Python project (Linear Regression + LSTM + Streamlit UI) available for download.
+            Educational demo only — not financial advice. Data: Yahoo Finance. Full Python ML
+            project (Linear Regression vs. Random Forest vs. Naive Baseline with TimeSeriesSplit)
+            available in the <span className="text-foreground">ml/</span> directory.
           </p>
         </footer>
       </div>

@@ -79,7 +79,12 @@ export function StockChart({ data, currency, splitDate }: Props) {
               x={splitDate}
               stroke="oklch(1 0 0 / 0.25)"
               strokeDasharray="4 4"
-              label={{ value: "train | test", fill: "var(--color-muted-foreground)", fontSize: 10, position: "top" }}
+              label={{
+                value: "train | test",
+                fill: "var(--color-muted-foreground)",
+                fontSize: 10,
+                position: "top",
+              }}
             />
           )}
           <Line

@@ -1,10 +1,12 @@
 /**
  * Lightweight client-side helpers for the stock prediction demo.
  *
- * All heavy ML lives in the Python project. Here we do:
- *  - moving averages
- *  - simple linear regression (least squares) for a baseline forecast
- *  - RMSE / MAE
+ * Full ML benchmarks (Linear Regression vs. Random Forest vs. Naive Baseline
+ * using lagged features and TimeSeriesSplit cross-validation) live in the `ml/` Python project.
+ * Here on the client we do:
+ *  - moving averages (MA-50, MA-100)
+ *  - ordinary least squares linear regression for trend forecasting
+ *  - out-of-sample RMSE & MAE evaluation compared against a naive persistence baseline (P_t = P_{t-1})
  */
 
 export type Bar = {
@@ -71,20 +73,26 @@ export type AnalysisResult = {
     fit: number | null; // regression line over the full history
     forecast: number | null;
   }>;
-  metrics: { rmse: number; mae: number };
+  metrics: {
+    rmse: number;
+    mae: number;
+    baselineRmse: number;
+    baselineMae: number;
+  };
   forecast: Array<{ date: string; value: number }>;
   trend: "up" | "down" | "flat";
+  dailyTrendPct: number;
   changePct: number;
   latestClose: number;
 };
 
-/** Run MA + linear regression + forecast. */
+/** Run MA + linear regression + forecast + naive baseline comparison. */
 export function analyze(bars: Bar[], forecastDays: number): AnalysisResult {
   const closes = bars.map((b) => b.close);
   const ma50 = movingAverage(closes, 50);
   const ma100 = movingAverage(closes, 100);
 
-  // Train/test split: last 20% used to compute metrics
+  // Train/test split: last 20% held out as test set to evaluate out-of-sample metrics
   const cutoff = Math.floor(closes.length * 0.8);
   const train = closes.slice(0, cutoff);
   const { a, b } = linearRegression(train);
@@ -93,6 +101,11 @@ export function analyze(bars: Bar[], forecastDays: number): AnalysisResult {
   const fit = closes.map((_, i) => a + b * i);
   const testActual = closes.slice(cutoff);
   const testPred = fit.slice(cutoff);
+
+  // Naive baseline benchmark: "tomorrow's price = today's price" (P_t = P_{t-1})
+  // For test day cutoff, the prior day's close was closes[cutoff - 1].
+  const baselinePred =
+    cutoff > 0 ? closes.slice(cutoff - 1, closes.length - 1) : closes.slice(0, testActual.length);
 
   // Forecast: extrapolate b business days forward using calendar-day step
   const lastDate = new Date(bars[bars.length - 1].date);
@@ -139,16 +152,28 @@ export function analyze(bars: Bar[], forecastDays: number): AnalysisResult {
     });
   }
 
-  const latestClose = closes[closes.length - 1];
-  const firstClose = closes[0];
+  const latestClose = closes[closes.length - 1] ?? 0;
+  const firstClose = closes[0] ?? 1;
   const changePct = ((latestClose - firstClose) / firstClose) * 100;
-  const trend: "up" | "down" | "flat" = b > 0.01 ? "up" : b < -0.01 ? "down" : "flat";
+
+  // Normalized trend slope: daily percentage change (b / latestClose * 100)
+  // Replaces fixed dollar cutoff (b > 0.01) so behavior is consistent across $5 vs $500 stocks.
+  // Threshold: +/- 0.02% per trading day (~5% annualized drift)
+  const dailyTrendPct = latestClose > 0 ? (b / latestClose) * 100 : 0;
+  const trend: "up" | "down" | "flat" =
+    dailyTrendPct > 0.02 ? "up" : dailyTrendPct < -0.02 ? "down" : "flat";
 
   return {
     rows,
-    metrics: { rmse: rmse(testActual, testPred), mae: mae(testActual, testPred) },
+    metrics: {
+      rmse: rmse(testActual, testPred),
+      mae: mae(testActual, testPred),
+      baselineRmse: rmse(testActual, baselinePred),
+      baselineMae: mae(testActual, baselinePred),
+    },
     forecast,
     trend,
+    dailyTrendPct,
     changePct,
     latestClose,
   };

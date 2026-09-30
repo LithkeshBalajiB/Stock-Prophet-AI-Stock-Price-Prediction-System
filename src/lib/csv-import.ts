@@ -87,7 +87,10 @@ function normalizeDate(raw: string): string | null {
 }
 
 export function parseCsv(text: string, name = "uploaded.csv"): CsvImportResult {
-  const cleaned = text.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").trim();
+  const cleaned = text
+    .replace(/^\uFEFF/, "")
+    .replace(/\r\n?/g, "\n")
+    .trim();
   if (!cleaned) {
     throw new Error("CSV file is empty.");
   }
@@ -113,14 +116,10 @@ export function parseCsv(text: string, name = "uploaded.csv"): CsvImportResult {
   })();
 
   if (dateIdx === -1) {
-    throw new Error(
-      `No date column found. Expected one of: ${DATE_KEYS.join(", ")}.`,
-    );
+    throw new Error(`No date column found. Expected one of: ${DATE_KEYS.join(", ")}.`);
   }
   if (closeIdx === -1) {
-    throw new Error(
-      `No price column found. Expected one of: ${CLOSE_KEYS.join(", ")}.`,
-    );
+    throw new Error(`No price column found. Expected one of: ${CLOSE_KEYS.join(", ")}.`);
   }
 
   const bars: Bar[] = [];
